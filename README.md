@@ -1,1 +1,2 @@
-# CC-Petalcore-Select
+# cloudcomputing
+eto na talaga
