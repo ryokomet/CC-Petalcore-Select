@@ -115,10 +115,21 @@ function createRecommendationCard(plant, index) {
     const imageWrap = document.createElement("div");
     imageWrap.className = "recommendation-image";
     const image = document.createElement("img");
-    image.src = "images/" + (plant.image_slug || "placeholder") + ".jpg";
+    const plantId = Number(plant.id);
+    const localImage = plant.image_slug
+        ? "images/" + encodeURIComponent(plant.image_slug) + ".jpg"
+        : "images/placeholder.jpg";
+    image.src = apiConfig && Number.isInteger(plantId) && plantId > 0
+        ? apiConfig.apiUrl + "/plants/" + plantId + "/image"
+        : localImage;
     image.alt = plant.common_name ? "Photo of " + plant.common_name : "Plant";
     image.loading = "lazy";
     image.onerror = () => {
+        if (!image.dataset.triedLocal && localImage !== "images/placeholder.jpg") {
+            image.dataset.triedLocal = "true";
+            image.src = localImage;
+            return;
+        }
         image.onerror = null;
         image.src = "images/placeholder.jpg";
     };
